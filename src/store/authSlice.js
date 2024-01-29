@@ -1,24 +1,25 @@
+import { asyncThunkCreator, buildCreateSlice } from '@reduxjs/toolkit';
 import {
-  asyncThunkCreator,
-  buildCreateSlice,
-  createSelector,
-} from '@reduxjs/toolkit';
-import { createUser, logOutUser, loginUser, token } from 'services/authApi';
+  createUser,
+  getInformation,
+  logOutUser,
+  loginUser,
+  token,
+} from 'services/authApi';
 
 const handlePanding = state => {
-  state.contacts.isLoading = true;
-  state.contacts.error = '';
+  state.isLoading = true;
+  state.error = '';
 };
 
 const handleRejected = (state, { payload }) => {
-  state.contacts.error = payload;
-  state.contacts.isLoading = false;
+  state.error = payload;
+  state.isLoading = false;
 };
 
-const handleItems = state => state.contacts.items;
-const handleIsLoading = state => state.contacts.isLoading;
-const handleError = state => state.contacts.error;
-const handleFilter = state => state.filter;
+const handleIsLogin = state => state.isLoggedIn;
+const handleUserName = state => state.user?.name;
+const handleIsRefreshing = state => state.isRefreshing;
 
 const initialState = {
   isLoggedIn: false,
@@ -28,7 +29,6 @@ const initialState = {
   isLoading: false,
   isRefreshing: false,
 };
-// reducer - это функция, которая принимает текущее состояние (state)
 
 const createSlice = buildCreateSlice({
   creators: { asyncThunk: asyncThunkCreator },
@@ -38,12 +38,9 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: creator => ({
-    setFilterAction: creator.reducer((state, { payload }) => {
-      state.filter = payload;
-    }),
-
     createUserAction: creator.asyncThunk(
       async (body, { rejectWithValue }) => {
+        console.log('body :>> ', body);
         try {
           const data = await createUser(body);
           token.set(data.token);
@@ -71,6 +68,7 @@ const authSlice = createSlice({
           token.set(data.token);
           return data;
         } catch (error) {
+          console.log('error :>> ', error);
           return rejectWithValue(error.response.data);
         }
       },
@@ -107,34 +105,53 @@ const authSlice = createSlice({
         rejected: handleRejected,
       }
     ),
-  }),
-  selectors: {
-    selectFilter: handleFilter,
-    selectContacts: handleItems,
-    selectIsLoading: handleIsLoading,
-    selectError: handleError,
-    selectFilteredContacts: createSelector(
-      [handleItems, handleFilter],
-      (contacts, filter) => {
-        return contacts.filter(({ name }) =>
-          name.toLowerCase().includes(filter)
-        );
+
+    getInformationAction: creator.asyncThunk(
+      async (_, { getState, rejectWithValue }) => {
+        const persistedToken = getState().auth.token;
+        if (!persistedToken) {
+          return rejectWithValue('No token provided');
+        }
+        token.set(persistedToken);
+        try {
+          return await getInformation();
+        } catch (error) {
+          return rejectWithValue(error.response.data);
+        }
+      },
+      {
+        pending: state => {
+          state.isLoading = true;
+          state.isRefreshing = true;
+          state.error = '';
+        },
+        fulfilled: (state, { payload }) => {
+          state.isLoading = false;
+          state.user = payload;
+          state.isLoggedIn = true;
+          state.isRefreshing = false;
+        },
+        rejected: (state, { payload }) => {
+          state.error = payload;
+          state.isRefreshing = false;
+          state.isLoading = false;
+        },
       }
     ),
+  }),
+  selectors: {
+    selectIsLogin: handleIsLogin,
+    selectUserName: handleUserName,
+    selectIsRefreshing: handleIsRefreshing,
   },
 });
 
-export const phonebookReducer = authSlice.reducer;
+export const authReducer = authSlice.reducer;
 export const {
-  setFilterAction,
-  getContactsAction,
-  deleteContactAction,
-  addContactAction,
+  createUserAction,
+  logOutUserAction,
+  loginUserAction,
+  getInformationAction,
 } = authSlice.actions;
-export const {
-  selectContacts,
-  selectError,
-  selectFilteredContacts,
-  selectIsLoading,
-  selectFilter,
-} = authSlice.selectors;
+export const { selectIsLogin, selectIsRefreshing, selectUserName } =
+  authSlice.selectors;

@@ -9,7 +9,7 @@ export const ContactForm = () => {
   const contacts = useSelector(selectContacts);
 
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [number, setNumber] = useState('');
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -18,8 +18,8 @@ export const ContactForm = () => {
       case 'name':
         setName(value.trim());
         break;
-      case 'phone':
-        setPhone(value.trim());
+      case 'number':
+        setNumber(value.trim());
         break;
       default:
         return;
@@ -28,12 +28,12 @@ export const ContactForm = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    addContact(name, phone);
+    addContact(name, number);
     setName('');
-    setPhone('');
+    setNumber('');
   };
 
-  const addContact = (name, phone) => {
+  const addContact = (name, number) => {
     const isPresent = contacts.find(contact => contact.name === name);
 
     if (isPresent) {
@@ -41,7 +41,7 @@ export const ContactForm = () => {
       return;
     }
 
-    dispatch(addContactAction({ name, phone }));
+    dispatch(addContactAction({ name, number }));
   };
 
   return (
@@ -56,9 +56,9 @@ export const ContactForm = () => {
       />
       <InputStyled
         type="tel"
-        name="phone"
+        name="number"
         onChange={handleChange}
-        value={phone}
+        value={number}
         required
         placeholder="Enter contact phone"
       />

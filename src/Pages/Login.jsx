@@ -1,10 +1,14 @@
+import { TitleStyled } from 'components/App/AppStyled';
+import { LoginForm } from 'components/LoginForm/LoginForm';
 import React from 'react';
-import PropTypes from 'prop-types';
 
 const Login = props => {
-  return <div>Login</div>;
+  return (
+    <div>
+      <TitleStyled>Login</TitleStyled>
+      <LoginForm />
+    </div>
+  );
 };
-
-Login.propTypes = {};
 
 export default Login;

@@ -18,8 +18,10 @@ export const ContactsList = () => {
 
   return (
     <ListStyled>
-      {filteredContacts.map(({ id, name, phone }) => {
-        return <ContactsListItem key={id} name={name} number={phone} id={id} />;
+      {filteredContacts.map(({ id, name, number }) => {
+        return (
+          <ContactsListItem key={id} name={name} number={number} id={id} />
+        );
       })}
     </ListStyled>
   );

@@ -42,6 +42,12 @@ const phonebookSlice = createSlice({
       state.filter = payload;
     }),
 
+    clearContactsAction: creator.reducer(state => {
+      state.contacts.items = [];
+      state.contacts.isLoading = false;
+      state.contacts.error = '';
+    }),
+
     getContactsAction: creator.asyncThunk(
       async (_, { rejectWithValue }) => {
         try {
@@ -120,6 +126,7 @@ export const {
   getContactsAction,
   deleteContactAction,
   addContactAction,
+  clearContactsAction,
 } = phonebookSlice.actions;
 export const {
   selectContacts,

@@ -1,10 +1,14 @@
+import { TitleStyled } from 'components/App/AppStyled';
+import { RegisterForm } from 'components/RegisterForm/RegisterForm';
 import React from 'react';
-import PropTypes from 'prop-types';
 
 const Register = props => {
-  return <div>Register</div>;
+  return (
+    <div>
+      <TitleStyled>Registration</TitleStyled>
+      <RegisterForm />
+    </div>
+  );
 };
-
-Register.propTypes = {};
 
 export default Register;

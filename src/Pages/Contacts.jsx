@@ -1,10 +1,18 @@
+import { ContactForm, Filter } from 'components';
+import { TitleStyled } from 'components/App/AppStyled';
+import { ContactsWrapper } from 'components/Contacts/ContactsWrapper';
 import React from 'react';
-import PropTypes from 'prop-types';
 
 const Contacts = props => {
-  return <div>Contacts</div>;
+  return (
+    <>
+      <TitleStyled>Phonebook</TitleStyled>
+      <ContactForm />
+      <TitleStyled>Contacts</TitleStyled>
+      <Filter />
+      <ContactsWrapper />
+    </>
+  );
 };
-
-Contacts.propTypes = {};
 
 export default Contacts;
