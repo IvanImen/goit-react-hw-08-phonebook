@@ -1,17 +1,22 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { selectUserName } from 'store/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { logOutUserAction, selectUserName } from 'store/authSlice';
+import { ButtonStyled, DivStyled, TextStyled } from './UserMenu.styled';
+import { clearContactsAction } from 'store/phonebookSlice';
 
 export const UserMenu = () => {
-  const logOutUser = () => {};
+  const dispatch = useDispatch();
+  const logOutUser = () => {
+    dispatch(logOutUserAction());
+    dispatch(clearContactsAction());
+  };
 
   const user = useSelector(selectUserName);
   return (
-    <div>
-      <p>Wellcome, {user}</p>
-      <button type="button" onClick={logOutUser}>
+    <DivStyled>
+      <TextStyled>Wellcome, {user}</TextStyled>
+      <ButtonStyled type="button" onClick={logOutUser}>
         Logout
-      </button>
-    </div>
+      </ButtonStyled>
+    </DivStyled>
   );
 };

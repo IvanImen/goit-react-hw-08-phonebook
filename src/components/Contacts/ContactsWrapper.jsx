@@ -7,10 +7,11 @@ import { selectError, selectIsLoading } from 'store/phonebookSlice';
 
 export const ContactsWrapper = () => {
   const error = useSelector(selectError);
+  const isLoading = useSelector(selectIsLoading);
 
   return (
     <>
-      {selectIsLoading && <Loader />}
+      {isLoading && <Loader />}
       {error && <ErrorStyled>{error}</ErrorStyled>}
       <ContactsList />
     </>

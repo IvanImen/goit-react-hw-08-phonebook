@@ -51,7 +51,8 @@ const phonebookSlice = createSlice({
     getContactsAction: creator.asyncThunk(
       async (_, { rejectWithValue }) => {
         try {
-          return await getContacts();
+          const data = await getContacts();
+          return data;
         } catch (error) {
           return rejectWithValue(error.response.data);
         }

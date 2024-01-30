@@ -17,7 +17,7 @@ const handleRejected = (state, { payload }) => {
   state.isLoading = false;
 };
 
-const handleIsLogin = state => state.isLoggedIn;
+const handleIsLoggedIn = state => state.isLoggedIn;
 const handleUserName = state => state.user?.name;
 const handleIsRefreshing = state => state.isRefreshing;
 
@@ -40,7 +40,6 @@ const authSlice = createSlice({
   reducers: creator => ({
     createUserAction: creator.asyncThunk(
       async (body, { rejectWithValue }) => {
-        console.log('body :>> ', body);
         try {
           const data = await createUser(body);
           token.set(data.token);
@@ -68,7 +67,6 @@ const authSlice = createSlice({
           token.set(data.token);
           return data;
         } catch (error) {
-          console.log('error :>> ', error);
           return rejectWithValue(error.response.data);
         }
       },
@@ -140,7 +138,7 @@ const authSlice = createSlice({
     ),
   }),
   selectors: {
-    selectIsLogin: handleIsLogin,
+    selectIsLoggedIn: handleIsLoggedIn,
     selectUserName: handleUserName,
     selectIsRefreshing: handleIsRefreshing,
   },
@@ -153,5 +151,5 @@ export const {
   loginUserAction,
   getInformationAction,
 } = authSlice.actions;
-export const { selectIsLogin, selectIsRefreshing, selectUserName } =
+export const { selectIsLoggedIn, selectIsRefreshing, selectUserName } =
   authSlice.selectors;
